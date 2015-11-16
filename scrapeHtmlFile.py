@@ -1,25 +1,39 @@
+
 import re
 from bs4 import BeautifulSoup
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud, STOPWORDS
+from stop_words import get_stop_words
 
+stop_words = get_stop_words('dutch')
 
 key = 'www.gea.nl'
 url = 'raw_html/' + key + '.html'
 f = open(url, 'r')
 
-
 # load the html doc
 doc = file.read(f)
 
+
 # make pure textfile
-soup = BeautifulSoup(doc)
+soup = BeautifulSoup(doc, 'lxml')
 for script in soup(["script", "style"]):
     script.extract()    # rip it out
 
+
 doc_text = soup.get_text()
 
-print(doc_text)
+wordcloud = WordCloud(
+    font_path='/Users/blaauw/Library/Fonts/CabinSketch-Bold.ttf',
+    stopwords=stop_words,
+    background_color='white',
+    width=800,
+    height=600).generate(doc_text)
+
+plt.imshow(wordcloud)
+plt.axis('off')
+plt.savefig('./www.gea.nl.png', dpi=300)
+plt.show()
 
 # keyword detection
 
@@ -60,7 +74,7 @@ v_adHese = re.findall('(adhese.com)', doc)
 v_wordPress = re.findall('(wp-content)', doc)
 
 
-
+# DEBUG PRINT - NEED DB STORAGE
 print filter(None, list(set(email)))
 print filter(None, list(set(phone)))
 print filter(None, list(set(zipcode)))
@@ -86,10 +100,6 @@ print filter(None, list(set(v_usaBilla)))
 print filter(None, list(set(v_shoppingMinds)))
 print filter(None, list(set(v_celeraOne)))
 print filter(None, list(set(v_adHese)))
-
 print filter(None, list(set(v_wordPress)))
-
-
-
 
 
