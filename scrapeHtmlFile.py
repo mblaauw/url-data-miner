@@ -1,14 +1,25 @@
 import re
-import nltk
+from bs4 import BeautifulSoup
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud, STOPWORDS
 
 
-f = open('raw_html/www.ambitiouspeoplecareers.com.html', 'r')
+key = 'www.gea.nl'
+url = 'raw_html/' + key + '.html'
+f = open(url, 'r')
+
 
 # load the html doc
 doc = file.read(f)
 
 # make pure textfile
-#doc_text
+soup = BeautifulSoup(doc)
+for script in soup(["script", "style"]):
+    script.extract()    # rip it out
+
+doc_text = soup.get_text()
+
+print(doc_text)
 
 # keyword detection
 
