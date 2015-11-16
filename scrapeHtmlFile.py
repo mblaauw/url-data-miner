@@ -1,11 +1,13 @@
-
 import re
 from bs4 import BeautifulSoup
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud, STOPWORDS
 from stop_words import get_stop_words
+import textmining
+
 
 stop_words = get_stop_words('dutch')
+
 
 key = 'www.gea.nl'
 url = 'raw_html/' + key + '.html'
@@ -14,15 +16,24 @@ f = open(url, 'r')
 # load the html doc
 doc = file.read(f)
 
-
 # make pure textfile
 soup = BeautifulSoup(doc, 'lxml')
 for script in soup(["script", "style"]):
     script.extract()    # rip it out
 
-
 doc_text = soup.get_text()
 
+# check top 20 keywords
+tdm = textmining.TermDocumentMatrix()
+tdm.add_doc(doc_text)
+
+for row in tdm.rows(cutoff=1):
+    print row
+
+exit()
+
+
+# make a wordcloud
 wordcloud = WordCloud(
     font_path='/Users/blaauw/Library/Fonts/CabinSketch-Bold.ttf',
     stopwords=stop_words,
@@ -32,8 +43,8 @@ wordcloud = WordCloud(
 
 plt.imshow(wordcloud)
 plt.axis('off')
-plt.savefig('./www.gea.nl.png', dpi=300)
-plt.show()
+plt.savefig('./www.gea.nl.png', dpi=150)
+#plt.show()
 
 # keyword detection
 
