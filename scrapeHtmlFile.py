@@ -1,49 +1,28 @@
+
 import re
 from bs4 import BeautifulSoup
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud, STOPWORDS
 from stop_words import get_stop_words
-import textmining
-import sklearn.feature_extraction.text as text
-import numpy as np  # a conventional alias
 
+stop_words = get_stop_words('dutch')
 
-stop_words = get_stop_words('en')
-
-key = 'www.ambitiouspeoplecareers.com'
+key = 'www.geadata.nl'
 url = 'raw_html/' + key + '.html'
 f = open(url, 'r')
 
 # load the html doc
 doc = file.read(f)
 
+
 # make pure textfile
 soup = BeautifulSoup(doc, 'lxml')
 for script in soup(["script", "style"]):
     script.extract()    # rip it out
 
+
 doc_text = soup.get_text()
-#file = open("tmp.txt", "w")
-#file.write(doc_text)
 
-
-# check top 20 keywords
-tdm = textmining.TermDocumentMatrix()
-tdm.add_doc(doc_text)
-
-
-#for row in tdm.rows(cutoff=1):
-#    print row
-
-vectorizer = text.CountVectorizer(doc_text, stop_words='english', min_df=20)
-dtm = vectorizer.fit_transform(doc_text).toarray()
-vocab = np.array(vectorizer.get_feature_names())
-
-
-exit()
-
-
-# make a wordcloud
 wordcloud = WordCloud(
     font_path='/Users/blaauw/Library/Fonts/CabinSketch-Bold.ttf',
     stopwords=stop_words,
@@ -53,8 +32,8 @@ wordcloud = WordCloud(
 
 plt.imshow(wordcloud)
 plt.axis('off')
-plt.savefig('./www.gea.nl.png', dpi=150)
-#plt.show()
+plt.savefig('./www.geadata.nl.png', dpi=300)
+plt.show()
 
 # keyword detection
 
