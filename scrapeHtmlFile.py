@@ -6,7 +6,7 @@ from stop_words import get_stop_words
 import textmining
 import sklearn.feature_extraction.text as text
 import numpy as np  # a conventional alias
-
+import gensim
 
 stop_words = get_stop_words('en')
 
@@ -23,21 +23,42 @@ for script in soup(["script", "style"]):
     script.extract()    # rip it out
 
 doc_text = soup.get_text()
-#file = open("tmp.txt", "w")
-#file.write(doc_text)
+file = open("raw_txt/tmp.txt", "w",)
+file.write(doc_text.encode('UTF-8'))
 
+import sklearn.feature_extraction.text as text
+import os
+from sklearn import decomposition
 
-# check top 20 keywords
-tdm = textmining.TermDocumentMatrix()
-tdm.add_doc(doc_text)
+CORPUS_PATH = os.path.join('raw_txt')
 
+filenames = sorted([os.path.join(CORPUS_PATH, fn) for fn in os.listdir(CORPUS_PATH)])
 
-#for row in tdm.rows(cutoff=1):
-#    print row
+vectorizer = text.CountVectorizer(input='filename', stop_words='english', min_df=1)
 
-vectorizer = text.CountVectorizer(doc_text, stop_words='english', min_df=20)
-dtm = vectorizer.fit_transform(doc_text).toarray()
+dtm = vectorizer.fit_transform(filenames).toarray()
+
 vocab = np.array(vectorizer.get_feature_names())
+
+
+num_topics = 3
+
+num_top_words = 20
+
+clf = decomposition.NMF(n_components=num_topics, random_state=1)
+
+doctopic = clf.fit_transform(dtm)
+
+topic_words = []
+
+for topic in clf.components_:
+    word_idx = np.argsort(topic)[::-1][0:num_top_words]
+    topic_words.append([vocab[i] for i in word_idx])
+
+doctopic = doctopic / np.sum(doctopic, axis=1, keepdims=True)
+
+for t in range(len(topic_words)):
+    print("Topic {}: {}".format(t, ' '.join(topic_words[t][:15])))
 
 
 
