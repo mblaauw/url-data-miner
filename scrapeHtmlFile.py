@@ -40,8 +40,7 @@ dtm = vectorizer.fit_transform(filenames).toarray()
 
 vocab = np.array(vectorizer.get_feature_names())
 
-
-num_topics = 3
+num_topics = 5
 
 num_top_words = 20
 
@@ -57,9 +56,44 @@ for topic in clf.components_:
 
 doctopic = doctopic / np.sum(doctopic, axis=1, keepdims=True)
 
-for t in range(len(topic_words)):
-    print("Topic {}: {}".format(t, ' '.join(topic_words[t][:15])))
 
+for t in range(len(topic_words)):
+    print(u"Topic {}: {}".format(t, ' '.join(topic_words[t][:15])))
+
+url_names = []
+
+for fn in filenames:
+    basename = os.path.basename(fn)
+    name, ext = os.path.splitext(basename)
+    url_names.append(name)
+
+url_names = np.asarray(url_names)
+
+print url_names
+
+doctopic_orig = doctopic.copy()
+
+num_groups = len(set(url_names))
+
+doctopic_grouped = np.zeros((num_groups, num_topics))
+
+for i, name in enumerate(sorted(set(url_names))):
+    doctopic_grouped[i, :] = np.mean(doctopic[url_names == name, :], axis=0)
+
+doctopic = doctopic_grouped
+
+urls = sorted(set(url_names))
+
+print("Top NMF topics in...")
+
+for i in range(len(doctopic)):
+   top_topics = np.argsort(doctopic[i,:])[::-1][0:3]
+   top_topics_str = ' '.join(str(t) for t in top_topics)
+   print("{}: {}".format(urls[i], top_topics_str))
+
+# show the top 15 words
+for t in range(len(topic_words)):
+   print(u"Topic {}: {}".format(t, ' '.join(topic_words[t][:15])))
 
 
 exit()
