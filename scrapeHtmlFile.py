@@ -40,6 +40,7 @@ dtm = vectorizer.fit_transform(doc_text).toarray()
 vocab = np.array(vectorizer.get_feature_names())
 
 
+
 exit()
 
 
