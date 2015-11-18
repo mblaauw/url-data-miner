@@ -1,28 +1,105 @@
-
 import re
 from bs4 import BeautifulSoup
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud, STOPWORDS
 from stop_words import get_stop_words
+import textmining
+import sklearn.feature_extraction.text as text
+import numpy as np  # a conventional alias
+import gensim
 
-stop_words = get_stop_words('dutch')
+stop_words = get_stop_words('en')
 
-key = 'www.geadata.nl'
+key = 'www.ambitiouspeoplecareers.com'
 url = 'raw_html/' + key + '.html'
 f = open(url, 'r')
 
 # load the html doc
 doc = file.read(f)
 
-
 # make pure textfile
 soup = BeautifulSoup(doc, 'lxml')
 for script in soup(["script", "style"]):
     script.extract()    # rip it out
 
-
 doc_text = soup.get_text()
+file = open("raw_txt/tmp.txt", "w",)
+file.write(doc_text.encode('UTF-8'))
 
+import sklearn.feature_extraction.text as text
+import os
+from sklearn import decomposition
+
+CORPUS_PATH = os.path.join('raw_txt')
+
+filenames = sorted([os.path.join(CORPUS_PATH, fn) for fn in os.listdir(CORPUS_PATH)])
+
+vectorizer = text.CountVectorizer(input='filename', stop_words='english', min_df=1)
+
+dtm = vectorizer.fit_transform(filenames).toarray()
+
+vocab = np.array(vectorizer.get_feature_names())
+
+num_topics = 5
+
+num_top_words = 20
+
+clf = decomposition.NMF(n_components=num_topics, random_state=1)
+
+doctopic = clf.fit_transform(dtm)
+
+topic_words = []
+
+for topic in clf.components_:
+    word_idx = np.argsort(topic)[::-1][0:num_top_words]
+    topic_words.append([vocab[i] for i in word_idx])
+
+doctopic = doctopic / np.sum(doctopic, axis=1, keepdims=True)
+
+
+for t in range(len(topic_words)):
+    print(u"Topic {}: {}".format(t, ' '.join(topic_words[t][:15])))
+
+url_names = []
+
+for fn in filenames:
+    basename = os.path.basename(fn)
+    name, ext = os.path.splitext(basename)
+    url_names.append(name)
+
+url_names = np.asarray(url_names)
+
+print url_names
+
+doctopic_orig = doctopic.copy()
+
+num_groups = len(set(url_names))
+
+doctopic_grouped = np.zeros((num_groups, num_topics))
+
+for i, name in enumerate(sorted(set(url_names))):
+    doctopic_grouped[i, :] = np.mean(doctopic[url_names == name, :], axis=0)
+
+doctopic = doctopic_grouped
+
+urls = sorted(set(url_names))
+
+print("Top NMF topics in...")
+
+for i in range(len(doctopic)):
+   top_topics = np.argsort(doctopic[i,:])[::-1][0:3]
+   top_topics_str = ' '.join(str(t) for t in top_topics)
+   print("{}: {}".format(urls[i], top_topics_str))
+
+# show the top 15 words
+for t in range(len(topic_words)):
+   print(u"Topic {}: {}".format(t, ' '.join(topic_words[t][:15])))
+
+
+exit()
+
+
+# make a wordcloud
 wordcloud = WordCloud(
     font_path='/Users/blaauw/Library/Fonts/CabinSketch-Bold.ttf',
     stopwords=stop_words,
@@ -32,8 +109,8 @@ wordcloud = WordCloud(
 
 plt.imshow(wordcloud)
 plt.axis('off')
-plt.savefig('./www.geadata.nl.png', dpi=300)
-plt.show()
+plt.savefig('./www.gea.nl.png', dpi=150)
+#plt.show()
 
 # keyword detection
 
