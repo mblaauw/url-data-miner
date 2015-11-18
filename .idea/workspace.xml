@@ -2,7 +2,25 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="95f4e0a2-f244-4723-9cf0-7d5e70ed2e94" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/raw_html/www.heineken.com.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/raw_html/www.heineken.nl.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/raw_txt/tmp.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/raw_txt/tmp1.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/raw_txt/tmp2.txt" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/genTextFiles.py" afterPath="$PROJECT_DIR$/genTextFiles.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/genTopNKeywords.py" afterPath="$PROJECT_DIR$/genTopNKeywords.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/raw_txt/www.ambitiouspeoplecareers.com.txt" afterPath="$PROJECT_DIR$/raw_txt/www.ambitiouspeoplecareers.com.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/raw_txt/www.amstel.nl.txt" afterPath="$PROJECT_DIR$/raw_txt/www.amstel.nl.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/raw_txt/www.bmw.nl.txt" afterPath="$PROJECT_DIR$/raw_txt/www.bmw.nl.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/raw_txt/www.gea.nl.txt" afterPath="$PROJECT_DIR$/raw_txt/www.gea.nl.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/raw_txt/www.gpgroot.nl.txt" afterPath="$PROJECT_DIR$/raw_txt/www.gpgroot.nl.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/raw_txt/www.heineken.com.txt" afterPath="$PROJECT_DIR$/raw_txt/www.heineken.com.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/raw_txt/www.heineken.nl.txt" afterPath="$PROJECT_DIR$/raw_txt/www.heineken.nl.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/raw_txt/www.ijzerwinkel.nl.txt" afterPath="$PROJECT_DIR$/raw_txt/www.ijzerwinkel.nl.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/raw_txt/www.ikea.nl.txt" afterPath="$PROJECT_DIR$/raw_txt/www.ikea.nl.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/raw_txt/www.nrc.nl.txt" afterPath="$PROJECT_DIR$/raw_txt/www.nrc.nl.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/raw_txt/www.svh.nl.txt" afterPath="$PROJECT_DIR$/raw_txt/www.svh.nl.txt" />
     </list>
     <ignored path="url-data-miner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -35,14 +53,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="genTextFiles.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="genTextFiles.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/genTextFiles.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="5" column="1" selection-start-line="5" selection-start-column="1" selection-end-line="8" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.16221374">
+              <caret line="13" column="22" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
               <folding>
-                <element signature="e#0#9#0" expanded="true" />
+                <element signature="e#0#17#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="www.ambitiouspeoplecareers.com.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/raw_txt/www.ambitiouspeoplecareers.com.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -57,11 +85,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="genTopNKeywords.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="genTopNKeywords.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/genTopNKeywords.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.19101124">
-              <caret line="8" column="47" selection-start-line="8" selection-start-column="47" selection-end-line="8" selection-end-column="47" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="7" selection-end-column="44" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -92,6 +120,7 @@
         <option value="$PROJECT_DIR$/scrapeHtmlFile.py" />
         <option value="$PROJECT_DIR$/word_lists/wordsToRemove_en_nl.txt" />
         <option value="$PROJECT_DIR$/genTopNKeywords.py" />
+        <option value="$PROJECT_DIR$/genTextFiles.py" />
       </list>
     </option>
   </component>
@@ -187,7 +216,7 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
-  <component name="RunManager" selected="Python.genTopNKeywords">
+  <component name="RunManager" selected="Python.genTextFiles">
     <configuration default="false" name="scrapeFolder" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -404,9 +433,9 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.genTopNKeywords" />
-        <item index="1" class="java.lang.String" itemvalue="Python.scrapeHtmlFile" />
-        <item index="2" class="java.lang.String" itemvalue="Python.genTextFiles" />
+        <item index="0" class="java.lang.String" itemvalue="Python.genTextFiles" />
+        <item index="1" class="java.lang.String" itemvalue="Python.genTopNKeywords" />
+        <item index="2" class="java.lang.String" itemvalue="Python.scrapeHtmlFile" />
         <item index="3" class="java.lang.String" itemvalue="Python.topicModeling" />
         <item index="4" class="java.lang.String" itemvalue="Python.scrapeFolder" />
       </list>
@@ -459,29 +488,35 @@
       <option name="project" value="LOCAL" />
       <updated>1447875762602</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="added term doc matrix functions">
+      <created>1447875767675</created>
+      <option name="number" value="00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1447875767675</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="82" y="23" width="1920" height="1173" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29166666" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32971016" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="100" y="123" width="1720" height="973" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32971016" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329653" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.5" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29166666" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32971016" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="100" y="123" width="1720" height="973" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -523,7 +558,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="21" column="16" selection-start-line="0" selection-start-column="0" selection-end-line="23" selection-end-column="16" />
           <folding>
-            <element signature="e#0#9#0" expanded="true" />
+            <element signature="e#0#17#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -648,22 +683,38 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/genTextFiles.py">
+    <entry file="file://$PROJECT_DIR$/genTopNKeywords.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="1" selection-start-line="5" selection-start-column="1" selection-end-line="8" selection-end-column="0" />
+          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="7" selection-end-column="44" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/genTopNKeywords.py">
+    <entry file="file://$PROJECT_DIR$/raw_txt/www.ambitiouspeoplecareers.com.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.19101124">
-          <caret line="8" column="47" selection-start-line="8" selection-start-column="47" selection-end-line="8" selection-end-column="47" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/raw_txt/www.gea.nl.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.6545802">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/genTextFiles.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.16221374">
+          <caret line="13" column="22" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
           <folding>
-            <element signature="e#0#9#0" expanded="true" />
+            <element signature="e#0#17#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -1,12 +1,14 @@
 import os
+import codecs
 from langdetect import detect
 
 for i in os.listdir('raw_txt'):
     if i.endswith(".txt"):
+        with codecs.open ("raw_txt/" + i, "r", "utf-8") as f:
+            data=f.read().replace('\n', ' ')
 
-
-        file = open('raw_txt/' + i, "r",)
-        lang = detect(file.read().encode('UTF-8'))
+        print data
+        lang = detect(data)
         print lang
 
 

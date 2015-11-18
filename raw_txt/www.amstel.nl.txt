@@ -1,19 +1,10 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+f (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+//]]>
 
 
 
@@ -42,7 +33,6 @@ We maken gebruik van cookies, klik "verder" om hiermee akkoord te gaan. Hier lee
 
 Onthoud mij
 								Vink dit vakje niet aan als de computer door meerdere mensen wordt gebruikt
-
 
 
 
