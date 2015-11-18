@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="95f4e0a2-f244-4723-9cf0-7d5e70ed2e94" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/url-data-miner.iml" afterPath="$PROJECT_DIR$/.idea/url-data-miner.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/genTopNKeywords.py" afterPath="$PROJECT_DIR$/genTopNKeywords.py" />
     </list>
     <ignored path="url-data-miner.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -456,7 +453,13 @@
       <option name="project" value="LOCAL" />
       <updated>1447875326368</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="added term doc matrix functions">
+      <created>1447875762602</created>
+      <option name="number" value="00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1447875762602</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="ToolWindowManager">
