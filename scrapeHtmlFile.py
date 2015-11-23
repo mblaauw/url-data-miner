@@ -1,119 +1,32 @@
 import re
-from bs4 import BeautifulSoup
-import matplotlib.pyplot as plt
-from wordcloud import WordCloud, STOPWORDS
-from stop_words import get_stop_words
-import textmining
-import sklearn.feature_extraction.text as text
-import numpy as np  # a conventional alias
-import gensim
+import sqlite3 as lite
 
-stop_words = get_stop_words('en')
 
-key = 'www.ambitiouspeoplecareers.com'
-url = 'raw_html/' + key + '.html'
-f = open(url, 'r')
+
+###########################################################################################################
+## CONFIG VARS
+###########################################################################################################
+
+DB_FILE_PATH            = 'db/data.db'
+DB_CONNECTION           = lite.connect(DB_FILE_PATH)
+
+#WORDS_TO_REMOVE_EN_NL   = 'word_list/wordsToRemove_en_nl.txt'
+#WORDS_STOP_NL           = get_stop_words('nl')
+#WORDS_STOP_EN           = get_stop_words('en')
+
+KEY_NAME                = 'www.gea.nl'
+FILE_TO_PARSE           = 'raw_html/' + KEY_NAME + '.html'
+
+
+###########################################################################################################
+## PARSE THE URL
+###########################################################################################################
+
+# open file
+f = open(FILE_TO_PARSE, 'r')
 
 # load the html doc
 doc = file.read(f)
-
-# make pure textfile
-soup = BeautifulSoup(doc, 'lxml')
-for script in soup(["script", "style"]):
-    script.extract()    # rip it out
-
-doc_text = soup.get_text()
-file = open("raw_txt/tmp.txt", "w",)
-file.write(doc_text.encode('UTF-8'))
-
-import sklearn.feature_extraction.text as text
-import os
-from sklearn import decomposition
-
-CORPUS_PATH = os.path.join('raw_txt')
-
-filenames = sorted([os.path.join(CORPUS_PATH, fn) for fn in os.listdir(CORPUS_PATH)])
-
-vectorizer = text.CountVectorizer(input='filename', stop_words='english', min_df=1)
-
-dtm = vectorizer.fit_transform(filenames).toarray()
-
-vocab = np.array(vectorizer.get_feature_names())
-
-num_topics = 5
-
-num_top_words = 20
-
-clf = decomposition.NMF(n_components=num_topics, random_state=1)
-
-doctopic = clf.fit_transform(dtm)
-
-topic_words = []
-
-for topic in clf.components_:
-    word_idx = np.argsort(topic)[::-1][0:num_top_words]
-    topic_words.append([vocab[i] for i in word_idx])
-
-doctopic = doctopic / np.sum(doctopic, axis=1, keepdims=True)
-
-
-for t in range(len(topic_words)):
-    print(u"Topic {}: {}".format(t, ' '.join(topic_words[t][:15])))
-
-url_names = []
-
-for fn in filenames:
-    basename = os.path.basename(fn)
-    name, ext = os.path.splitext(basename)
-    url_names.append(name)
-
-url_names = np.asarray(url_names)
-
-print url_names
-
-doctopic_orig = doctopic.copy()
-
-num_groups = len(set(url_names))
-
-doctopic_grouped = np.zeros((num_groups, num_topics))
-
-for i, name in enumerate(sorted(set(url_names))):
-    doctopic_grouped[i, :] = np.mean(doctopic[url_names == name, :], axis=0)
-
-doctopic = doctopic_grouped
-
-urls = sorted(set(url_names))
-
-print("Top NMF topics in...")
-
-for i in range(len(doctopic)):
-   top_topics = np.argsort(doctopic[i,:])[::-1][0:3]
-   top_topics_str = ' '.join(str(t) for t in top_topics)
-   print("{}: {}".format(urls[i], top_topics_str))
-
-# show the top 15 words
-for t in range(len(topic_words)):
-   print(u"Topic {}: {}".format(t, ' '.join(topic_words[t][:15])))
-
-
-exit()
-
-
-# make a wordcloud
-wordcloud = WordCloud(
-    font_path='/Users/blaauw/Library/Fonts/CabinSketch-Bold.ttf',
-    stopwords=stop_words,
-    background_color='white',
-    width=800,
-    height=600).generate(doc_text)
-
-plt.imshow(wordcloud)
-plt.axis('off')
-plt.savefig('./www.gea.nl.png', dpi=150)
-#plt.show()
-
-# keyword detection
-
 
 # basic info detection
 email = re.findall('([A-Za-z0-9.+_-]+@[A-Za-z0-9._-]+[a-zA-Z])', doc)
@@ -130,53 +43,102 @@ youtube = re.findall('(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:(?:\w\.)*#!\/)?
 pinterest = re.findall('(?:https?:\/\/)?(?:www\.)?pinterest\.com\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)', doc)
 
 
+
+
+
+def detectTechnology(find_string, input_doc):
+    found = re.findall(find_string, input_doc)
+    if len(found) != 0:
+        return ['TRUE']
+    else:
+        return []
+
+
 # technology detection
-v_googleAnalytics = re.findall('(google-analytics)', doc)
-v_openGraphProtocol = re.findall('(ogp.me)', doc)
-v_googleTagService = re.findall('(www.googletagmanager.com)', doc)
-v_googleLeadServices = re.findall('(googleadservices)', doc)
-v_quoteCast = re.findall('(quotecast.vwdservices.com)', doc)
-v_chartBeat = re.findall('(chartbeat.com)', doc)
-v_adobeDpm = re.findall('(dpm.demdex.bet)', doc)
-v_messagent = re.findall('(messagent.)', doc)
-v_graydonLeadInsights = re.findall('(leadinsights.graydon-global.com)', doc)
-v_visualRevenue = re.findall('(visualrevenue.com)', doc)
-v_brightCove = re.findall('(brightcove.com)', doc)
-v_hotJar = re.findall('(hotjar.com)', doc)
-v_usaBilla = re.findall('(usabilla.com)', doc)
-v_shoppingMinds = re.findall('(shoppingminds.com)', doc)
-v_celeraOne = re.findall('(celeraone.com)', doc)
-v_adHese = re.findall('(adhese.com)', doc)
-
-v_wordPress = re.findall('(wp-content)', doc)
-
-
-# DEBUG PRINT - NEED DB STORAGE
-print filter(None, list(set(email)))
-print filter(None, list(set(phone)))
-print filter(None, list(set(zipcode)))
-print filter(None, list(set(btwnr)))
-print filter(None, list(set(linkedin)))
-print filter(None, list(set(facebook)))
-print filter(None, list(set(twitter)))
-print filter(None, list(set(youtube)))
-print filter(None, list(set(pinterest)))
-print filter(None, list(set(v_googleAnalytics)))
-print filter(None, list(set(v_openGraphProtocol)))
-print filter(None, list(set(v_googleTagService)))
-print filter(None, list(set(v_googleLeadServices)))
-print filter(None, list(set(v_quoteCast)))
-print filter(None, list(set(v_chartBeat)))
-print filter(None, list(set(v_adobeDpm)))
-print filter(None, list(set(v_messagent)))
-print filter(None, list(set(v_graydonLeadInsights)))
-print filter(None, list(set(v_visualRevenue)))
-print filter(None, list(set(v_brightCove)))
-print filter(None, list(set(v_hotJar)))
-print filter(None, list(set(v_usaBilla)))
-print filter(None, list(set(v_shoppingMinds)))
-print filter(None, list(set(v_celeraOne)))
-print filter(None, list(set(v_adHese)))
-print filter(None, list(set(v_wordPress)))
+v_googleAnalytics = detectTechnology('(google-analytics)', doc)
+v_openGraphProtocol = detectTechnology('(ogp.me)', doc)
+v_googleTagService = detectTechnology('(www.googletagmanager.com)', doc)
+v_googleLeadServices = detectTechnology('(googleadservices)', doc)
+v_quoteCast = detectTechnology('(quotecast.vwdservices.com)', doc)
+v_chartBeat = detectTechnology('(chartbeat.com)', doc)
+v_adobeDpm = detectTechnology('(dpm.demdex.bet)', doc)
+v_messagent = detectTechnology('(messagent.)', doc)
+v_graydonLeadInsights = detectTechnology('(leadinsights.graydon-global.com)', doc)
+v_visualRevenue = detectTechnology('(visualrevenue.com)', doc)
+v_brightCove = detectTechnology('(brightcove.com)', doc)
+v_hotJar = detectTechnology('(hotjar.com)', doc)
+v_usaBilla = detectTechnology('(usabilla.com)', doc)
+v_shoppingMinds = detectTechnology('(shoppingminds.com)', doc)
+v_celeraOne = detectTechnology('(celeraone.com)', doc)
+v_adHese = detectTechnology('(adhese.com)', doc)
+v_wordPress = detectTechnology('(wp-content)', doc)
 
 
+###########################################################################################################
+## STORE IN DATABASE
+###########################################################################################################
+
+def addToKeyDim(key_name, connection_name, table_name):
+    query_create_table = "create table if not exists " + table_name + " (key CHAR(120) PRIMARY KEY)"
+    query_delete = "DELETE FROM " + table_name + " WHERE key = '" + key_name + "'"
+    query_insert = "INSERT INTO " + table_name + "(key) VALUES (?)"
+
+    params = (key_name,)
+
+    with connection_name:
+        cur = connection_name.cursor()
+        cur.execute(query_create_table)
+        cur.execute(query_delete)
+        cur.execute(query_insert, params)
+        cur.close()
+
+
+def storeInDb(key_name, data, connection_name, table_name):
+
+    data = set(data)
+
+    if len(data) != 0:
+        query_insert = "INSERT INTO " + table_name + "(key, value) VALUES (?,?)"
+        query_delete = "DELETE FROM " + table_name + " WHERE key = '" + key_name + "'"
+        query_create_table = "create table if not exists " + table_name + " (key CHAR(120) PRIMARY KEY, value TEXT)"
+
+        params = (key_name, "|".join(data))
+
+        with connection_name:
+            cur = connection_name.cursor()
+            cur.execute(query_create_table)
+            cur.execute(query_delete)
+            cur.execute(query_insert, params)
+            cur.close()
+
+
+addToKeyDim(KEY_NAME, DB_CONNECTION, "d_urlKeys")
+
+storeInDb(KEY_NAME, email, DB_CONNECTION, "f_email")
+storeInDb(KEY_NAME, phone, DB_CONNECTION, "f_phone")
+storeInDb(KEY_NAME, zipcode, DB_CONNECTION, "f_zipcode")
+storeInDb(KEY_NAME, btwnr, DB_CONNECTION, "f_btwnr")
+storeInDb(KEY_NAME, linkedin, DB_CONNECTION, "f_linkedin")
+storeInDb(KEY_NAME, facebook, DB_CONNECTION, "f_facebook")
+storeInDb(KEY_NAME, twitter, DB_CONNECTION, "f_twitter")
+storeInDb(KEY_NAME, youtube, DB_CONNECTION, "f_youtube")
+storeInDb(KEY_NAME, pinterest, DB_CONNECTION, "f_pinterest")
+
+storeInDb(KEY_NAME, v_googleAnalytics, DB_CONNECTION, "f_googleAnalytics")
+storeInDb(KEY_NAME, v_openGraphProtocol, DB_CONNECTION, "f_openGraphProtocol")
+storeInDb(KEY_NAME, v_googleTagService, DB_CONNECTION, "f_googleTagService")
+storeInDb(KEY_NAME, v_googleLeadServices, DB_CONNECTION, "f_googleLeadServices")
+storeInDb(KEY_NAME, v_quoteCast, DB_CONNECTION, "f_quoteCast")
+storeInDb(KEY_NAME, v_chartBeat, DB_CONNECTION, "f_chartBeat")
+storeInDb(KEY_NAME, v_adobeDpm, DB_CONNECTION, "f_adobeDpm")
+storeInDb(KEY_NAME, v_messagent, DB_CONNECTION, "f_messagent")
+storeInDb(KEY_NAME, v_graydonLeadInsights, DB_CONNECTION, "f_graydonLeadInsights")
+storeInDb(KEY_NAME, v_visualRevenue, DB_CONNECTION, "f_visualRevenue")
+storeInDb(KEY_NAME, v_brightCove, DB_CONNECTION, "f_brightCove")
+storeInDb(KEY_NAME, v_hotJar, DB_CONNECTION, "f_hotJar")
+storeInDb(KEY_NAME, v_usaBilla, DB_CONNECTION, "f_usaBilla")
+storeInDb(KEY_NAME, v_shoppingMinds, DB_CONNECTION, "f_shoppingMinds")
+storeInDb(KEY_NAME, v_celeraOne, DB_CONNECTION, "f_celeraOne")
+storeInDb(KEY_NAME, v_adHese, DB_CONNECTION, "f_adHese")
+storeInDb(KEY_NAME, v_wordPress, DB_CONNECTION, "f_wordPress")
+storeInDb(KEY_NAME, v_hotJar, DB_CONNECTION, "f_hotJar")
