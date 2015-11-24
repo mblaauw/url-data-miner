@@ -1,120 +1,23 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sqlite3 as lite
 import html2text
-from stop_words import get_stop_words
+
 import codecs
 import re
 from collections import Counter
-
-###########################################################################################################
-## CONFIG VARS
-###########################################################################################################
-
-DB_FILE_PATH            = 'db/data.db'
-DB_CONNECTION           = lite.connect(DB_FILE_PATH)
-
-with codecs.open('word_lists/wordsToRemove_en_nl.txt','r', 'UTF-8') as f:
-    WORDS_TO_REMOVE_EN_NL = f.read().splitlines()
-
-WORDS_STOP_NL           = get_stop_words('nl')
-WORDS_STOP_EN           = get_stop_words('en')
-
-WORDS_TO_REMOVE_CONCAT  = WORDS_TO_REMOVE_EN_NL + WORDS_STOP_NL + WORDS_STOP_EN
-WORDS_TO_REMOVE_CONCAT  = set(WORDS_TO_REMOVE_CONCAT)
-
-
-KEY_NAME                = 'www.ambitiouspeoplecareers.com'
-FILE_TO_PARSE           = 'raw_html/' + KEY_NAME + '.html'
 
 
 
 ###########################################################################################################
 ## PARSE THE URL
 ###########################################################################################################
-
-# open file
-doc = codecs.open(FILE_TO_PARSE, 'r').read()
-
-# load the html doc
-h = html2text.HTML2Text()
-
-try:
-    doc_text = h.handle(doc.decode('utf-8'))
-except IOError:
-    try:
-        doc_text = h.handle(doc.decode('latin-1'))
-    except IOError:
-        print "do nothing"
-
-# remove links, remove strange chars, remove numbers, split in one big string
-doc_text = re.sub(u'\w+:\/{2}[\d\w-]+(\.[\d\w-]+)*(?:(?:\/[^\s/]*))*', '', doc_text, flags=re.MULTILINE)
-doc_text = re.sub(u'[^\w]+', ' ', doc_text, flags=re.UNICODE)
-doc_text = re.sub(u'[0-9]+', ' ', doc_text, flags=re.UNICODE)
-doc_text = doc_text.split(" ")
-
-# make a wordlist and remove cleanup words
-words = []
-for word in doc_text:
-    if not any(word.lower() in s for s in WORDS_TO_REMOVE_CONCAT):
-        words.append(word)
-
-
-top20words = Counter(words).most_common(20)
-
-top_words = []
-for i, item in enumerate(top20words):
-    top_words.append(tuple(item)[0])
-
-
-# basic info detection
-email = re.findall('([A-Za-z0-9.+_-]+@[A-Za-z0-9._-]+[a-zA-Z])', doc)
-phone = re.findall('(\d{1,4}[\s-]\d{6,8})', doc)
-zipcode = re.findall('([1-9][0-9]{3}\s?[a-zA-Z]{2})\s', doc)
-btwnr = re.findall('([NL]{2}[0-9]{2,}[B][0-9]{2})', doc)
-
-
-# social detections
-linkedin = re.findall('(?:https?:\/\/)?(?:www\.)?linkedin\.com\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)', doc)
-facebook = re.findall('(?:https?:\/\/)?(?:www\.)?facebook\.com\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)', doc)
-twitter = re.findall('(?:https?:\/\/)?(?:www\.)?twitter\.com\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)', doc)
-youtube = re.findall('(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)', doc)
-pinterest = re.findall('(?:https?:\/\/)?(?:www\.)?pinterest\.com\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)', doc)
-
-
-
 def detectTechnology(find_string, input_doc):
     found = re.findall(find_string, input_doc)
     if len(found) != 0:
         return ['TRUE']
     else:
         return []
-
-
-# technology detection
-v_googleAnalytics = detectTechnology('(google-analytics)', doc)
-v_openGraphProtocol = detectTechnology('(ogp.me)', doc)
-v_googleTagService = detectTechnology('(www.googletagmanager.com)', doc)
-v_googleLeadServices = detectTechnology('(googleadservices)', doc)
-v_quoteCast = detectTechnology('(quotecast.vwdservices.com)', doc)
-v_chartBeat = detectTechnology('(chartbeat.com)', doc)
-v_adobeDpm = detectTechnology('(dpm.demdex.bet)', doc)
-v_messagent = detectTechnology('(messagent.)', doc)
-v_graydonLeadInsights = detectTechnology('(leadinsights.graydon-global.com)', doc)
-v_visualRevenue = detectTechnology('(visualrevenue.com)', doc)
-v_brightCove = detectTechnology('(brightcove.com)', doc)
-v_hotJar = detectTechnology('(hotjar.com)', doc)
-v_usaBilla = detectTechnology('(usabilla.com)', doc)
-v_shoppingMinds = detectTechnology('(shoppingminds.com)', doc)
-v_celeraOne = detectTechnology('(celeraone.com)', doc)
-v_adHese = detectTechnology('(adhese.com)', doc)
-v_wordPress = detectTechnology('(wp-content)', doc)
-
-
-###########################################################################################################
-## STORE IN DATABASE
-###########################################################################################################
 
 def addToKeyDim(key_name, connection_name, table_name):
     query_create_table = "create table if not exists " + table_name + " (key CHAR(120) PRIMARY KEY)"
@@ -129,7 +32,6 @@ def addToKeyDim(key_name, connection_name, table_name):
         cur.execute(query_delete)
         cur.execute(query_insert, params)
         cur.close()
-
 
 def storeInDb(key_name, data, connection_name, table_name):
 
@@ -149,37 +51,103 @@ def storeInDb(key_name, data, connection_name, table_name):
             cur.execute(query_insert, params)
             cur.close()
 
+def parseHtmlDump(file_to_parse, words_to_remove, db_connection, key_name):
+
+    doc = codecs.open(file_to_parse, 'r').read()
+
+    # load the html doc
+    h = html2text.HTML2Text()
+
+    try:
+        doc_text = h.handle(doc.decode('utf-8'))
+    except IOError:
+        try:
+            doc_text = h.handle(doc.decode('latin-1'))
+        except IOError:
+            print "do nothing"
+
+    # avoid having to regexp html
+    doc = doc_text
+
+    # remove links, remove strange chars, remove numbers, split in one big string
+    doc_text = re.sub(u'\w+:\/{2}[\d\w-]+(\.[\d\w-]+)*(?:(?:\/[^\s/]*))*', '', doc_text, flags=re.MULTILINE)
+    doc_text = re.sub(u'[^\w]+', ' ', doc_text, flags=re.UNICODE)
+    doc_text = re.sub(u'[0-9]+', ' ', doc_text, flags=re.UNICODE)
+    doc_text = doc_text.split(" ")
+
+    # make a wordlist and remove cleanup words
+    words = []
+    for word in doc_text:
+        if not any(word.lower() in s for s in words_to_remove):
+            words.append(word)
 
 
+    top20words = Counter(words).most_common(20)
 
-addToKeyDim(KEY_NAME, DB_CONNECTION, "d_urlKeys")
+    top_words = []
+    for i, item in enumerate(top20words):
+        top_words.append(tuple(item)[0])
 
-storeInDb(KEY_NAME, top_words, DB_CONNECTION, "f_topwords")
-storeInDb(KEY_NAME, email, DB_CONNECTION, "f_email")
-storeInDb(KEY_NAME, phone, DB_CONNECTION, "f_phone")
-storeInDb(KEY_NAME, zipcode, DB_CONNECTION, "f_zipcode")
-storeInDb(KEY_NAME, btwnr, DB_CONNECTION, "f_btwnr")
-storeInDb(KEY_NAME, linkedin, DB_CONNECTION, "f_linkedin")
-storeInDb(KEY_NAME, facebook, DB_CONNECTION, "f_facebook")
-storeInDb(KEY_NAME, twitter, DB_CONNECTION, "f_twitter")
-storeInDb(KEY_NAME, youtube, DB_CONNECTION, "f_youtube")
-storeInDb(KEY_NAME, pinterest, DB_CONNECTION, "f_pinterest")
+    # basic info detection
+    email = re.findall('([A-Za-z0-9.+_-]+@[A-Za-z0-9._-]+[a-zA-Z])', doc)
+    phone = re.findall('(\d{1,4}[\s-]\d{6,8})', doc)
+    zipcode = re.findall('([1-9][0-9]{3}\s?[a-zA-Z]{2})\s', doc)
+    btwnr = re.findall('([NL]{2}[0-9]{2,}[B][0-9]{2})', doc)
 
-storeInDb(KEY_NAME, v_googleAnalytics, DB_CONNECTION, "f_googleAnalytics")
-storeInDb(KEY_NAME, v_openGraphProtocol, DB_CONNECTION, "f_openGraphProtocol")
-storeInDb(KEY_NAME, v_googleTagService, DB_CONNECTION, "f_googleTagService")
-storeInDb(KEY_NAME, v_googleLeadServices, DB_CONNECTION, "f_googleLeadServices")
-storeInDb(KEY_NAME, v_quoteCast, DB_CONNECTION, "f_quoteCast")
-storeInDb(KEY_NAME, v_chartBeat, DB_CONNECTION, "f_chartBeat")
-storeInDb(KEY_NAME, v_adobeDpm, DB_CONNECTION, "f_adobeDpm")
-storeInDb(KEY_NAME, v_messagent, DB_CONNECTION, "f_messagent")
-storeInDb(KEY_NAME, v_graydonLeadInsights, DB_CONNECTION, "f_graydonLeadInsights")
-storeInDb(KEY_NAME, v_visualRevenue, DB_CONNECTION, "f_visualRevenue")
-storeInDb(KEY_NAME, v_brightCove, DB_CONNECTION, "f_brightCove")
-storeInDb(KEY_NAME, v_hotJar, DB_CONNECTION, "f_hotJar")
-storeInDb(KEY_NAME, v_usaBilla, DB_CONNECTION, "f_usaBilla")
-storeInDb(KEY_NAME, v_shoppingMinds, DB_CONNECTION, "f_shoppingMinds")
-storeInDb(KEY_NAME, v_celeraOne, DB_CONNECTION, "f_celeraOne")
-storeInDb(KEY_NAME, v_adHese, DB_CONNECTION, "f_adHese")
-storeInDb(KEY_NAME, v_wordPress, DB_CONNECTION, "f_wordPress")
-storeInDb(KEY_NAME, v_hotJar, DB_CONNECTION, "f_hotJar")
+    # social detections
+    linkedin = re.findall('(?:https?:\/\/)?(?:www\.)?linkedin\.com\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)', doc)
+    facebook = re.findall('(?:https?:\/\/)?(?:www\.)?facebook\.com\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)', doc)
+    twitter = re.findall('(?:https?:\/\/)?(?:www\.)?twitter\.com\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)', doc)
+    youtube = re.findall('(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)', doc)
+    pinterest = re.findall('(?:https?:\/\/)?(?:www\.)?pinterest\.com\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)', doc)
+
+    # technology detection
+    v_googleAnalytics = detectTechnology('(google-analytics)', doc)
+    v_openGraphProtocol = detectTechnology('(ogp.me)', doc)
+    v_googleTagService = detectTechnology('(www.googletagmanager.com)', doc)
+    v_googleLeadServices = detectTechnology('(googleadservices)', doc)
+    v_quoteCast = detectTechnology('(quotecast.vwdservices.com)', doc)
+    v_chartBeat = detectTechnology('(chartbeat.com)', doc)
+    v_adobeDpm = detectTechnology('(dpm.demdex.bet)', doc)
+    v_messagent = detectTechnology('(messagent.)', doc)
+    v_graydonLeadInsights = detectTechnology('(leadinsights.graydon-global.com)', doc)
+    v_visualRevenue = detectTechnology('(visualrevenue.com)', doc)
+    v_brightCove = detectTechnology('(brightcove.com)', doc)
+    v_hotJar = detectTechnology('(hotjar.com)', doc)
+    v_usaBilla = detectTechnology('(usabilla.com)', doc)
+    v_shoppingMinds = detectTechnology('(shoppingminds.com)', doc)
+    v_celeraOne = detectTechnology('(celeraone.com)', doc)
+    v_adHese = detectTechnology('(adhese.com)', doc)
+    v_wordPress = detectTechnology('(wp-content)', doc)
+
+    # Store it all in the database
+    addToKeyDim(key_name, db_connection, "d_urlKeys")
+    storeInDb(key_name, top_words, db_connection, "f_topwords")
+    storeInDb(key_name, email, db_connection, "f_email")
+    storeInDb(key_name, phone, db_connection, "f_phone")
+    storeInDb(key_name, zipcode, db_connection, "f_zipcode")
+    storeInDb(key_name, btwnr, db_connection, "f_btwnr")
+    storeInDb(key_name, linkedin, db_connection, "f_linkedin")
+    storeInDb(key_name, facebook, db_connection, "f_facebook")
+    storeInDb(key_name, twitter, db_connection, "f_twitter")
+    storeInDb(key_name, youtube, db_connection, "f_youtube")
+    storeInDb(key_name, pinterest, db_connection, "f_pinterest")
+
+    storeInDb(key_name, v_googleAnalytics, db_connection, "f_googleAnalytics")
+    storeInDb(key_name, v_openGraphProtocol, db_connection, "f_openGraphProtocol")
+    storeInDb(key_name, v_googleTagService, db_connection, "f_googleTagService")
+    storeInDb(key_name, v_googleLeadServices, db_connection, "f_googleLeadServices")
+    storeInDb(key_name, v_quoteCast, db_connection, "f_quoteCast")
+    storeInDb(key_name, v_chartBeat, db_connection, "f_chartBeat")
+    storeInDb(key_name, v_adobeDpm, db_connection, "f_adobeDpm")
+    storeInDb(key_name, v_messagent, db_connection, "f_messagent")
+    storeInDb(key_name, v_graydonLeadInsights, db_connection, "f_graydonLeadInsights")
+    storeInDb(key_name, v_visualRevenue, db_connection, "f_visualRevenue")
+    storeInDb(key_name, v_brightCove, db_connection, "f_brightCove")
+    storeInDb(key_name, v_hotJar, db_connection, "f_hotJar")
+    storeInDb(key_name, v_usaBilla, db_connection, "f_usaBilla")
+    storeInDb(key_name, v_shoppingMinds, db_connection, "f_shoppingMinds")
+    storeInDb(key_name, v_celeraOne, db_connection, "f_celeraOne")
+    storeInDb(key_name, v_adHese, db_connection, "f_adHese")
+    storeInDb(key_name, v_wordPress, db_connection, "f_wordPress")
+    storeInDb(key_name, v_hotJar, db_connection, "f_hotJar")
