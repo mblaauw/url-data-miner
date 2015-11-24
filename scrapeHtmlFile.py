@@ -63,7 +63,9 @@ for word in doc_text:
 
 top20words = Counter(words).most_common(20)
 
-print top20words
+top_words = []
+for i, item in enumerate(top20words):
+    top_words.append(tuple(item)[0])
 
 
 # basic info detection
@@ -79,8 +81,6 @@ facebook = re.findall('(?:https?:\/\/)?(?:www\.)?facebook\.com\/(?:(?:\w\.)*#!\/
 twitter = re.findall('(?:https?:\/\/)?(?:www\.)?twitter\.com\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)', doc)
 youtube = re.findall('(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)', doc)
 pinterest = re.findall('(?:https?:\/\/)?(?:www\.)?pinterest\.com\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)', doc)
-
-
 
 
 
@@ -150,9 +150,11 @@ def storeInDb(key_name, data, connection_name, table_name):
             cur.close()
 
 
+
+
 addToKeyDim(KEY_NAME, DB_CONNECTION, "d_urlKeys")
 
-
+storeInDb(KEY_NAME, top_words, DB_CONNECTION, "f_topwords")
 storeInDb(KEY_NAME, email, DB_CONNECTION, "f_email")
 storeInDb(KEY_NAME, phone, DB_CONNECTION, "f_phone")
 storeInDb(KEY_NAME, zipcode, DB_CONNECTION, "f_zipcode")
