@@ -8,8 +8,6 @@ from stop_words import get_stop_words
 import codecs
 import re
 
-
-
 ###########################################################################################################
 ## CONFIG VARS
 ###########################################################################################################
@@ -42,12 +40,23 @@ doc = codecs.open(FILE_TO_PARSE, 'r').read()
 h = html2text.HTML2Text()
 doc_text = h.handle(doc.decode('utf8'))
 
-print doc_text
+#doc_text_list = re.findall(r'\w+', doc_text)
+import nltk
+doc_text_list = nltk.word_tokenize(doc_text)
+
+print doc_text_list
+
+
+#print doc_text
+
+r = [x for x in doc_text_list if x not in WORDS_STOP_NL]
+
+#print r
+
 #print doc_text
 for word in WORDS_STOP_NL:
     doc_text = doc_text.replace(word, '')
 
-print doc_text
 
 exit()
 
