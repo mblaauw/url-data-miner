@@ -1,9 +1,14 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import re
 import sqlite3 as lite
 import html2text
 from stop_words import get_stop_words
 import codecs
 import re
+
+
 
 ###########################################################################################################
 ## CONFIG VARS
@@ -12,12 +17,15 @@ import re
 DB_FILE_PATH            = 'db/data.db'
 DB_CONNECTION           = lite.connect(DB_FILE_PATH)
 
-with codecs.open('word_lists/wordsToRemove_en_nl.txt','r', 'utf8') as f:
+with codecs.open('word_lists/wordsToRemove_en_nl.txt','r', 'UTF-8') as f:
     WORDS_TO_REMOVE_EN_NL = f.read().splitlines()
 
-WORDS_TO_REMOVE_EN_NL   = str(WORDS_TO_REMOVE_EN_NL)
-WORDS_STOP_NL           = str(get_stop_words('nl'))
-WORDS_STOP_EN           = str(get_stop_words('en'))
+WORDS_STOP_NL           = get_stop_words('nl')
+WORDS_STOP_EN           = get_stop_words('en')
+
+WORDS_TO_REMOVE_CONCAT  = WORDS_TO_REMOVE_EN_NL + WORDS_STOP_NL + WORDS_STOP_EN
+WORDS_TO_REMOVE_CONCAT  = set(WORDS_TO_REMOVE_CONCAT)
+
 
 KEY_NAME                = 'www.gea.nl'
 FILE_TO_PARSE           = 'raw_html/' + KEY_NAME + '.html'
@@ -34,7 +42,14 @@ doc = codecs.open(FILE_TO_PARSE, 'r').read()
 h = html2text.HTML2Text()
 doc_text = h.handle(doc.decode('utf8'))
 
-print type(doc_text)
+print doc_text
+#print doc_text
+for word in WORDS_STOP_NL:
+    doc_text = doc_text.replace(word, '')
+
+print doc_text
+
+exit()
 
 # cleanup the text
 pattern = re.compile("(" + WORDS_TO_REMOVE_EN_NL + ")\W", re.I)
@@ -43,17 +58,18 @@ pattern = re.compile("(" + WORDS_STOP_NL + ")\W", re.I)
 
 
 
-doc_text = [doc_text.encode('utf8')]
 
-print doc_text
-
-#print map(lambda phrase: pattern.sub("", phrase),  phrases)
-
-exit()
+#print map(lambda phrase: pattern.sub("", phrase),  doc_text)
 
 doc_text.replace(WORDS_TO_REMOVE_EN_NL, '')
 doc_text.replace(WORDS_STOP_NL, '')
 doc_text.replace(WORDS_STOP_EN, '')
+
+
+
+exit()
+
+
 
 
 
