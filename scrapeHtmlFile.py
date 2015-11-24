@@ -1,12 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import re
 import sqlite3 as lite
 import html2text
 from stop_words import get_stop_words
 import codecs
 import re
+from collections import Counter
 
 ###########################################################################################################
 ## CONFIG VARS
@@ -25,8 +25,9 @@ WORDS_TO_REMOVE_CONCAT  = WORDS_TO_REMOVE_EN_NL + WORDS_STOP_NL + WORDS_STOP_EN
 WORDS_TO_REMOVE_CONCAT  = set(WORDS_TO_REMOVE_CONCAT)
 
 
-KEY_NAME                = 'www.gea.nl'
+KEY_NAME                = 'www.ambitiouspeoplecareers.com'
 FILE_TO_PARSE           = 'raw_html/' + KEY_NAME + '.html'
+
 
 
 ###########################################################################################################
@@ -38,48 +39,31 @@ doc = codecs.open(FILE_TO_PARSE, 'r').read()
 
 # load the html doc
 h = html2text.HTML2Text()
-doc_text = h.handle(doc.decode('utf8'))
 
-#doc_text_list = re.findall(r'\w+', doc_text)
-import nltk
-doc_text_list = nltk.word_tokenize(doc_text)
+try:
+    doc_text = h.handle(doc.decode('utf-8'))
+except IOError:
+    try:
+        doc_text = h.handle(doc.decode('latin-1'))
+    except IOError:
+        print "do nothing"
 
-print doc_text_list
+# remove links, remove strange chars, remove numbers, split in one big string
+doc_text = re.sub(u'\w+:\/{2}[\d\w-]+(\.[\d\w-]+)*(?:(?:\/[^\s/]*))*', '', doc_text, flags=re.MULTILINE)
+doc_text = re.sub(u'[^\w]+', ' ', doc_text, flags=re.UNICODE)
+doc_text = re.sub(u'[0-9]+', ' ', doc_text, flags=re.UNICODE)
+doc_text = doc_text.split(" ")
 
-
-#print doc_text
-
-r = [x for x in doc_text_list if x not in WORDS_STOP_NL]
-
-#print r
-
-#print doc_text
-for word in WORDS_STOP_NL:
-    doc_text = doc_text.replace(word, '')
-
-
-exit()
-
-# cleanup the text
-pattern = re.compile("(" + WORDS_TO_REMOVE_EN_NL + ")\W", re.I)
-pattern = re.compile("(" + WORDS_STOP_EN + ")\W", re.I)
-pattern = re.compile("(" + WORDS_STOP_NL + ")\W", re.I)
+# make a wordlist and remove cleanup words
+words = []
+for word in doc_text:
+    if not any(word.lower() in s for s in WORDS_TO_REMOVE_CONCAT):
+        words.append(word)
 
 
+top20words = Counter(words).most_common(20)
 
-
-#print map(lambda phrase: pattern.sub("", phrase),  doc_text)
-
-doc_text.replace(WORDS_TO_REMOVE_EN_NL, '')
-doc_text.replace(WORDS_STOP_NL, '')
-doc_text.replace(WORDS_STOP_EN, '')
-
-
-
-exit()
-
-
-
+print top20words
 
 
 # basic info detection
@@ -167,6 +151,7 @@ def storeInDb(key_name, data, connection_name, table_name):
 
 
 addToKeyDim(KEY_NAME, DB_CONNECTION, "d_urlKeys")
+
 
 storeInDb(KEY_NAME, email, DB_CONNECTION, "f_email")
 storeInDb(KEY_NAME, phone, DB_CONNECTION, "f_phone")
