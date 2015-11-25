@@ -163,13 +163,12 @@ def htmlToCleanTxt(html_file):
 
     try:
         doc_text = h.handle(f.decode('utf-8'))
-    except IOError:
-        try:
-            doc_text = h.handle(f.decode('latin-1'))
-        except IOError:
-            print "do nothing"
+    except Exception:
+        doc_text = h.handle(f.decode('windows-1252'))
+    else:
+        doc_text = h.handle(f.decode('latin-1'))
 
-    return unicode(doc_text)
+    return unicode(h)
 
 
 def parseHtml_social(text):
@@ -254,6 +253,7 @@ def parseHtml_topwords(text, words_to_remove):
     text = re.sub(u'[^\w]+', ' ', text, flags=re.UNICODE)
     text = re.sub(u'[0-9]+', ' ', text, flags=re.UNICODE)
     text = text.split(" ")
+
 
     # make a wordlist and remove cleanup words
     words = []
