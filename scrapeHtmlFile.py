@@ -101,6 +101,7 @@ def parseHtmlDump(file_to_parse, words_to_remove, db_connection, key_name):
     youtube = re.findall('(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)', doc)
     pinterest = re.findall('(?:https?:\/\/)?(?:www\.)?pinterest\.com\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)', doc)
 
+
     # technology detection
     v_googleAnalytics = detectTechnology('(google-analytics)', doc)
     v_openGraphProtocol = detectTechnology('(ogp.me)', doc)
@@ -151,3 +152,119 @@ def parseHtmlDump(file_to_parse, words_to_remove, db_connection, key_name):
     storeInDb(key_name, v_adHese, db_connection, "f_adHese")
     storeInDb(key_name, v_wordPress, db_connection, "f_wordPress")
     storeInDb(key_name, v_hotJar, db_connection, "f_hotJar")
+
+
+def htmlToCleanTxt(html_file):
+
+    f = codecs.open(html_file, 'r').read()
+
+    # load the html doc
+    h = html2text.HTML2Text()
+
+    try:
+        doc_text = h.handle(f.decode('utf-8'))
+    except IOError:
+        try:
+            doc_text = h.handle(f.decode('latin-1'))
+        except IOError:
+            print "do nothing"
+
+    return unicode(doc_text)
+
+
+def parseHtml_social(text):
+    linkedin = re.findall('(?:https?:\/\/)?(?:www\.)?linkedin\.com\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)', text)
+    facebook = re.findall('(?:https?:\/\/)?(?:www\.)?facebook\.com\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)', text)
+    twitter = re.findall('(?:https?:\/\/)?(?:www\.)?twitter\.com\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)', text)
+    youtube = re.findall('(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)', text)
+    pinterest = re.findall('(?:https?:\/\/)?(?:www\.)?pinterest\.com\/(?:(?:\w\.)*#!\/)?(?:pages\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)', text)
+
+    l = []
+    l.append([u"linkedin","|".join(set(linkedin))])
+    l.append([u"facebook","|".join(set(facebook))])
+    l.append([u"twitter","|".join(set(twitter))])
+    l.append([u"youtube","|".join(set(youtube))])
+    l.append([u"pinterest","|".join(set(pinterest))])
+
+    return l
+
+
+def parseHtml_generic(text):
+    # basic info detection
+    email = re.findall('([A-Za-z0-9.+_-]+@[A-Za-z0-9._-]+[a-zA-Z])', text)
+    phone = re.findall('(\d{1,4}[\s-]\d{6,8})', text)
+    zipcode = re.findall('([1-9][0-9]{3}\s?[a-zA-Z]{2})\s', text)
+    btwnr = re.findall('([NL]{2}[0-9]{2,}[B][0-9]{2})', text)
+
+    l = []
+    l.append([u"email","|".join(set(email))])
+    l.append([u"phone","|".join(set(phone))])
+    l.append([u"zipcode","|".join(set(zipcode))])
+    l.append([u"btwnr","|".join(set(btwnr))])
+
+    return l
+
+
+def parseHtml_analytics(html):
+    # technology detection
+    googleAnalytics = detectTechnology('(google-analytics)', html)
+    openGraphProtocol = detectTechnology('(ogp.me)', html)
+    googleTagService = detectTechnology('(www.googletagmanager.com)', html)
+    googleLeadServices = detectTechnology('(googleadservices)', html)
+    quoteCast = detectTechnology('(quotecast.vwdservices.com)', html)
+    chartBeat = detectTechnology('(chartbeat.com)', html)
+    adobeDpm = detectTechnology('(dpm.demdex.bet)', html)
+    messagent = detectTechnology('(messagent.)', html)
+    graydonLeadInsights = detectTechnology('(leadinsights.graydon-global.com)', html)
+    visualRevenue = detectTechnology('(visualrevenue.com)', html)
+    brightCove = detectTechnology('(brightcove.com)', html)
+    hotJar = detectTechnology('(hotjar.com)', html)
+    usaBilla = detectTechnology('(usabilla.com)', html)
+    shoppingMinds = detectTechnology('(shoppingminds.com)', html)
+    celeraOne = detectTechnology('(celeraone.com)', html)
+    adHese = detectTechnology('(adhese.com)', html)
+    wordPress = detectTechnology('(wp-content)', html)
+
+    l = []
+    l.append([u"googleAnalytics",googleAnalytics])
+    l.append([u"openGraphProtocol",openGraphProtocol])
+    l.append([u"googleTagService",googleTagService])
+    l.append([u"googleLeadServices",googleLeadServices])
+    l.append([u"quoteCast",quoteCast])
+    l.append([u"chartBeat",chartBeat])
+    l.append([u"adobeDpm",adobeDpm])
+    l.append([u"messagent",messagent])
+    l.append([u"graydonLeadInsights",graydonLeadInsights])
+    l.append([u"visualRevenue",visualRevenue])
+    l.append([u"brightCove",brightCove])
+    l.append([u"hotJar",hotJar])
+    l.append([u"usaBilla",usaBilla])
+    l.append([u"shoppingMinds",shoppingMinds])
+    l.append([u"celeraOne",celeraOne])
+    l.append([u"adHese",adHese])
+    l.append([u"wordPress",wordPress])
+
+    return l
+
+
+def parseHtml_topwords(text, words_to_remove):
+
+    # remove overhead
+    text = re.sub(u'\w+:\/{2}[\d\w-]+(\.[\d\w-]+)*(?:(?:\/[^\s/]*))*', '', text, flags=re.MULTILINE)
+    text = re.sub(u'[^\w]+', ' ', text, flags=re.UNICODE)
+    text = re.sub(u'[0-9]+', ' ', text, flags=re.UNICODE)
+    text = text.split(" ")
+
+    # make a wordlist and remove cleanup words
+    words = []
+    for word in text:
+        if not any(word.lower() in s for s in words_to_remove):
+            words.append(word)
+
+    top20words = Counter(words).most_common(25)
+
+    top_words = []
+    for i, item in enumerate(top20words):
+        top_words.append(tuple(item)[0])
+
+    return top_words

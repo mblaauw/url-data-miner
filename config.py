@@ -15,8 +15,3 @@ WORDS_STOP_EN           = get_stop_words('en')
 
 WORDS_TO_REMOVE_CONCAT  = WORDS_TO_REMOVE_EN_NL + WORDS_STOP_NL + WORDS_STOP_EN
 WORDS_TO_REMOVE_CONCAT  = set(WORDS_TO_REMOVE_CONCAT)
-
-
-KEY_NAME                = 'www.gea.nl'
-FILE_TO_PARSE           = 'raw_html/' + KEY_NAME + '.html'
-
