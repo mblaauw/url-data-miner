@@ -17,10 +17,12 @@ if __name__ == '__main__':
             doc = s.htmlToCleanTxt("raw_html/" + i)
             html = codecs.open("raw_html/" + i, 'r').read()
 
+            topwords = s.parseHtml_topwords(doc, c.WORDS_TO_REMOVE_CONCAT)
             socials =  s.parseHtml_social(doc)
             generics =  s.parseHtml_generic(doc)
-            analytics = s.parseHtml_analytics(html)
-            topwords = s.parseHtml_topwords(doc, c.WORDS_TO_REMOVE_CONCAT)
+            analytics = s.parseHtml_technology(html)
+
+            topwords
 
             for social in socials:
                 print social[0],social[1]
@@ -31,7 +33,7 @@ if __name__ == '__main__':
             for analytic in analytics:
                 print analytic[0],analytic[1]
 
-            print topwords
+
 
         except ImportError:
             print 1

@@ -204,7 +204,7 @@ def parseHtml_generic(text):
     return l
 
 
-def parseHtml_analytics(html):
+def parseHtml_technology(html):
     # technology detection
     openGraphProtocol = detectTechnology('(ogp.me)', html)
     googleTagService = detectTechnology('(www.googletagmanager.com)', html)
@@ -298,7 +298,6 @@ def parseHtml_topwords(text, words_to_remove):
     text = re.sub(u'[0-9]+', ' ', text, flags=re.UNICODE)
     text = text.split(" ")
 
-
     # make a wordlist and remove cleanup words
     words = []
     for word in text:
@@ -311,4 +310,4 @@ def parseHtml_topwords(text, words_to_remove):
     for i, item in enumerate(top20words):
         top_words.append(tuple(item)[0])
 
-    return top_words
+    return "|".join(top_words)
