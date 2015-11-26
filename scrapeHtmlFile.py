@@ -162,11 +162,11 @@ def htmlToCleanTxt(html_file):
     h = html2text.HTML2Text()
 
     try:
-        doc_text = h.handle(f.decode('utf-8'))
+        doc_text = h.handle(f.decode('latin-1'))
     except Exception:
         doc_text = h.handle(f.decode('windows-1252'))
     else:
-        doc_text = h.handle(f.decode('latin-1'))
+        doc_text = h.handle(f.decode('utf-8'))
 
     return unicode(h)
 
@@ -206,25 +206,65 @@ def parseHtml_generic(text):
 
 def parseHtml_analytics(html):
     # technology detection
-    googleAnalytics = detectTechnology('(google-analytics)', html)
     openGraphProtocol = detectTechnology('(ogp.me)', html)
     googleTagService = detectTechnology('(www.googletagmanager.com)', html)
     googleLeadServices = detectTechnology('(googleadservices)', html)
     quoteCast = detectTechnology('(quotecast.vwdservices.com)', html)
-    chartBeat = detectTechnology('(chartbeat.com)', html)
     adobeDpm = detectTechnology('(dpm.demdex.bet)', html)
     messagent = detectTechnology('(messagent.)', html)
     graydonLeadInsights = detectTechnology('(leadinsights.graydon-global.com)', html)
     visualRevenue = detectTechnology('(visualrevenue.com)', html)
     brightCove = detectTechnology('(brightcove.com)', html)
     hotJar = detectTechnology('(hotjar.com)', html)
+
+    # user feedback & contact tech
     usaBilla = detectTechnology('(usabilla.com)', html)
-    shoppingMinds = detectTechnology('(shoppingminds.com)', html)
+
+    # datascience extentions
+    dimml  = detectTechnology('(dimml.io)', html)
+
+    # analytics
+    googleAnalytics = detectTechnology('(google\-analytics\.com)', html)
+    chartBeat = detectTechnology('(chartbeat.com)', html)
     celeraOne = detectTechnology('(celeraone.com)', html)
-    adHese = detectTechnology('(adhese.com)', html)
+    crazyegg = detectTechnology('(crazyegg.com)', html)
+    plista = detectTechnology('(plista.com)', html)
+
+    # sales
+    salesflare = detectTechnology('(salesflare.com)', html) # AI
+
+    # website tech
     wordPress = detectTechnology('(wp-content)', html)
 
+    # add & conversion optimizers
+    shop2market = detectTechnology('(shop2market)', html)
+    shoppingMinds = detectTechnology('(shoppingminds)', html)
+
+    # cdn & content delivery
+    optimizely = detectTechnology('(cdn.optimizely.com)', html)
+    cbcdn = detectTechnology('(cbcdn.net)', html)
+    gigya = detectTechnology('(cdn.gigya.com)', html)
+
+
+    # hosting and webbuilders
+    enrise = detectTechnology('(enrise.com)', html)
+
+
+    # adds providerss
+    doubleclick = detectTechnology('(doubleclick)', html)
+    addthis = detectTechnology('(addthis)', html)
+    adHese = detectTechnology('(adhese)', html)
+
+
     l = []
+
+    l.append([u"gigya",gigya])
+    l.append([u"dimml",dimml])
+    l.append([u"cbcdn",cbcdn])
+    l.append([u"salesflare",salesflare])
+    l.append([u"plista",plista])
+    l.append([u"enrise",enrise])
+    l.append([u"crazyegg",crazyegg])
     l.append([u"googleAnalytics",googleAnalytics])
     l.append([u"openGraphProtocol",openGraphProtocol])
     l.append([u"googleTagService",googleTagService])
@@ -242,6 +282,10 @@ def parseHtml_analytics(html):
     l.append([u"celeraOne",celeraOne])
     l.append([u"adHese",adHese])
     l.append([u"wordPress",wordPress])
+    l.append([u"optimizely",optimizely])
+    l.append([u"shop2market",shop2market])
+    l.append([u"doubleclick",doubleclick])
+    l.append([u"addthis",addthis])
 
     return l
 
