@@ -22,11 +22,12 @@ for line in f.read().split('\n'):
 
         #  setup vars based on response
         html = r.content
-        codePage = r.encoding
-        redirectUrl = r.url
+        codePage = unicode(r.encoding)
+        serverType = unicode(r.headers.get('server'))
+        redirectUrl = unicode(r.url)
         timeElapsed = unicode(timedelta(microseconds=r.elapsed.microseconds))
 
-        print codePage + " ----------- " + redirectUrl + " ----------- " + url + " -- " + timeElapsed
+        print codePage + " ----------- " + redirectUrl + " ----------- " + url + " -- " + timeElapsed + " -- " + serverType
 
     except requests.exceptions.ConnectionError as e:
         x = 1
