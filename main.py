@@ -6,6 +6,12 @@ import config as c
 import codecs
 
 
+
+
+
+
+
+exit()
 if __name__ == '__main__':
 
     for i in os.listdir('raw_html'):
