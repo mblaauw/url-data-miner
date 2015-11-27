@@ -6,7 +6,9 @@ import html2text
 import codecs
 import re
 from collections import Counter
-
+import html2text
+import urllib2
+from bs4 import BeautifulSoup
 
 
 ###########################################################################################################
@@ -154,7 +156,7 @@ def parseHtmlDump(file_to_parse, words_to_remove, db_connection, key_name):
     storeInDb(key_name, v_hotJar, db_connection, "f_hotJar")
 
 
-def htmlToCleanTxt(html_file):
+def htmlToTxt_file(html_file):
 
     f = codecs.open(html_file, 'r').read()
 
@@ -169,6 +171,11 @@ def htmlToCleanTxt(html_file):
         doc_text = h.handle(f.decode('utf-8'))
 
     return unicode(h)
+
+
+def htmlToTxt_url(url):
+    soup = BeautifulSoup(urllib2.urlopen(url).read())
+    return soup.get_text()
 
 
 def parseHtml_social(text):

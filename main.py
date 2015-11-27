@@ -20,14 +20,20 @@ for line in f.read().split('\n'):
     try:
         r = requests.get(url, headers=headers, timeout=5, allow_redirects=True)
 
-        #  setup vars based on response
-        html = r.content
-        codePage = unicode(r.encoding)
-        serverType = unicode(r.headers.get('server'))
-        redirectUrl = unicode(r.url)
+        codePage = unicode( r.encoding )
+        serverType = unicode( r.headers.get('server') )
+        redirectUrl = unicode( r.url )
         timeElapsed = unicode(timedelta(microseconds=r.elapsed.microseconds))
 
-        print codePage + " ----------- " + redirectUrl + " ----------- " + url + " -- " + timeElapsed + " -- " + serverType
+        html = r.content
+
+        print url
+        html_text = s.htmlToTxt_url( url )
+
+        analytics = s.parseHtml_technology( html )
+
+        print url, redirectUrl, codePage, serverType, timeElapsed
+        print analytics
 
     except requests.exceptions.ConnectionError as e:
         x = 1
