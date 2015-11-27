@@ -6,7 +6,7 @@ import config as c
 import codecs
 import requests
 from datetime import timedelta
-
+import re
 
 f = open('urlList.txt','r')
 for line in f.read().split('\n'):
@@ -20,20 +20,31 @@ for line in f.read().split('\n'):
     try:
         r = requests.get(url, headers=headers, timeout=5, allow_redirects=True)
 
+        html = r.content
+
+
         codePage = unicode( r.encoding )
         serverType = unicode( r.headers.get('server') )
         redirectUrl = unicode( r.url )
         timeElapsed = unicode(timedelta(microseconds=r.elapsed.microseconds))
 
-        html = r.content
-
-        print url
-        html_text = s.htmlToTxt_url( url )
-
         analytics = s.parseHtml_technology( html )
 
-        print url, redirectUrl, codePage, serverType, timeElapsed
-        print analytics
+        links = s.getLocalLinksFromHtml( html )
+        for link in links:
+            print unicode(link)
+
+        #if link.find(line.lower()) != -1:
+
+        totalLinks = len(links)
+
+        #for link in links:
+
+
+        #html_text = s.htmlToTxt_object( html )
+
+        #print url, redirectUrl, codePage, serverType, timeElapsed, "|".join(links)
+        #print analytics
 
     except requests.exceptions.ConnectionError as e:
         x = 1

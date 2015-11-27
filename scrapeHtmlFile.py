@@ -7,9 +7,9 @@ import codecs
 import re
 from collections import Counter
 import html2text
-import urllib2
 from bs4 import BeautifulSoup
-
+import urllib
+import lxml.html
 
 ###########################################################################################################
 ## PARSE THE URL
@@ -173,9 +173,19 @@ def htmlToTxt_file(html_file):
     return unicode(h)
 
 
-def htmlToTxt_url(url):
-    soup = BeautifulSoup(urllib2.urlopen(url).read())
+def htmlToTxt_object(html):
+    soup = BeautifulSoup(html, "lxml")
     return soup.get_text()
+
+
+def getLocalLinksFromHtml( html ):
+    dom =  lxml.html.fromstring( html )
+
+    links = []
+    for link in dom.xpath('//a/@href'):
+        links.append(link)
+
+    return set(links)
 
 
 def parseHtml_social(text):
