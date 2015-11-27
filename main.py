@@ -20,28 +20,32 @@ for line in f.read().split('\n'):
     try:
         r = requests.get(url, headers=headers, timeout=5, allow_redirects=True)
 
-        html = r.content
-
-
         codePage = unicode( r.encoding )
         serverType = unicode( r.headers.get('server') )
         redirectUrl = unicode( r.url )
         timeElapsed = unicode(timedelta(microseconds=r.elapsed.microseconds))
 
-        analytics = s.parseHtml_technology( html )
+        html = r.content
+        technology = s.parseHtml_technology( html )
 
-        links = s.getLocalLinksFromHtml( html )
-        for link in links:
-            print unicode(link)
+        links_dirty = s.getLocalLinksFromHtml( html )
+        links_clean = []
 
-        #if link.find(line.lower()) != -1:
+        for link in links_dirty:
+            if link[:1] == '/':
+                links_clean.append( redirectUrl + link )
+            elif link.find(line) != -1:
+                links_clean.append(link)
 
-        totalLinks = len(links)
+        totalLinks = len(links_clean)
 
-        #for link in links:
+        for link in links_clean:
+            r = requests.get(url, headers=headers, timeout=5, allow_redirects=True)
+            html = r.content
+
+            html_text = s.htmlToTxt_object( html )
 
 
-        #html_text = s.htmlToTxt_object( html )
 
         #print url, redirectUrl, codePage, serverType, timeElapsed, "|".join(links)
         #print analytics
