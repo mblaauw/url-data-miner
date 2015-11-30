@@ -5,7 +5,6 @@ from stop_words import get_stop_words
 import sqlite3 as lite
 
 DB_FILE_PATH            = 'db/data.db'
-DB_CONNECTION           = lite.connect(DB_FILE_PATH)
 
 with codecs.open('word_lists/wordsToRemove_en_nl.txt','r', 'UTF-8') as f:
     WORDS_TO_REMOVE_EN_NL = f.read().splitlines()

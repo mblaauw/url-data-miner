@@ -23,31 +23,36 @@ for line in f.read().split('\n'):
         codePage = unicode( r.encoding )
         serverType = unicode( r.headers.get('server') )
         redirectUrl = unicode( r.url )
-        timeElapsed = unicode(timedelta(microseconds=r.elapsed.microseconds))
+        timeElapsed = unicode( timedelta(microseconds=r.elapsed.microseconds) )
 
         html = r.content
         technology = s.parseHtml_technology( html )
 
+        # store in the database
+        s.storeBasicUrlInfo(c.DB_FILE_PATH, url, redirectUrl, codePage, serverType, timeElapsed)
+        print url, redirectUrl, codePage, serverType, timeElapsed
+
         links_dirty = s.getLocalLinksFromHtml( html )
         links_clean = []
 
-        for link in links_dirty:
-            if link[:1] == '/':
-                links_clean.append( redirectUrl + link )
-            elif link.find(line) != -1:
-                links_clean.append(link)
+        # for link in links_dirty:
+        #     if link[:1] == '/':
+        #         links_clean.append( redirectUrl + link )
+        #     elif link.find(line) != -1:
+        #         links_clean.append(link)
+        #
+        # totalLinks = len(links_clean)
+        #
+        # for link in links_clean:
+        #     print link
+        #     r = requests.get(url, headers=headers, timeout=5, allow_redirects=True)
+        #     html = r.content
+        #
+        #     html_text = s.htmlToTxt_object( html )
 
-        totalLinks = len(links_clean)
-
-        for link in links_clean:
-            r = requests.get(url, headers=headers, timeout=5, allow_redirects=True)
-            html = r.content
-
-            html_text = s.htmlToTxt_object( html )
 
 
 
-        #print url, redirectUrl, codePage, serverType, timeElapsed, "|".join(links)
         #print analytics
 
     except requests.exceptions.ConnectionError as e:

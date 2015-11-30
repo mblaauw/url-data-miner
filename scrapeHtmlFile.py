@@ -8,8 +8,8 @@ import re
 from collections import Counter
 import html2text
 from bs4 import BeautifulSoup
-import urllib
 import lxml.html
+import sqlite3 as lite
 
 ###########################################################################################################
 ## PARSE THE URL
@@ -34,6 +34,25 @@ def addToKeyDim(key_name, connection_name, table_name):
         cur.execute(query_delete)
         cur.execute(query_insert, params)
         cur.close()
+
+def storeBasicUrlInfo(db_file, url, redirectUrl, codePage, serverType, timeElapsed):
+    DB_FILE_PATH            = db_file
+    DB_CONNECTION           = lite.connect(DB_FILE_PATH)
+
+    query_create_table  = "create table if not exists d_basicUrlInfo (url CHAR(120) PRIMARY KEY, redirectUrl CHAR(250), codePage CHAR(50), serverType CHAR(150) ,timeElapsed CHAR(25))"
+    query_delete        = "DELETE FROM d_basicUrlInfo WHERE url = '" + url + "'"
+    query_insert        = "INSERT INTO d_basicUrlInfo (url, redirectUrl, codePage, serverType, timeElapsed) VALUES (?,?,?,?,?)"
+
+    params = (url, redirectUrl, codePage, serverType, timeElapsed)
+
+    with DB_CONNECTION:
+        cur = DB_CONNECTION.cursor()
+        cur.execute(query_create_table)
+        cur.execute(query_delete)
+        cur.execute(query_insert, params)
+        cur.close()
+
+
 
 def storeInDb(key_name, data, connection_name, table_name):
 
