@@ -8,13 +8,13 @@ import requests
 from datetime import timedelta
 import re
 
+headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/45.0.2454.101 Chrome/45.0.2454.101 Safari/537.36',
+           'Accept-Language': 'en-US,en;q=0.8,nl;q=0.6',
+           'Accept' : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'}
+
 f = open('urlList.txt','r')
+
 for line in f.read().split('\n'):
-
-    headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/45.0.2454.101 Chrome/45.0.2454.101 Safari/537.36',
-               'Accept-Language': 'en-US,en;q=0.8,nl;q=0.6',
-               'Accept' : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'}
-
     url = 'http://' + line
 
     try:
@@ -28,6 +28,10 @@ for line in f.read().split('\n'):
         html = r.content
         technology = s.parseHtml_technology( html )
 
+        html_text = s.htmlToTxt_object( html )
+
+        keywords = s.parseHtml_topwords(html_text, c.WORDS_TO_REMOVE_CONCAT)
+
         # store in the database
         s.storeBasicUrlInfo(c.DB_FILE_PATH, url, redirectUrl, codePage, serverType, timeElapsed)
         #print url, redirectUrl, codePage, serverType, timeElapsed
@@ -37,6 +41,7 @@ for line in f.read().split('\n'):
             if tech[1] == ['TRUE']:
                 print tech[0]
 
+        print keywords
 
         links_dirty = s.getLocalLinksFromHtml( html )
         links_clean = []

@@ -6,7 +6,7 @@ import html2text
 import codecs
 import re
 from collections import Counter
-import html2text
+import html2text as h2t
 from bs4 import BeautifulSoup
 import lxml.html
 import sqlite3 as lite
@@ -51,7 +51,6 @@ def storeBasicUrlInfo(db_file, url, redirectUrl, codePage, serverType, timeElaps
         cur.execute(query_delete)
         cur.execute(query_insert, params)
         cur.close()
-
 
 
 def storeInDb(key_name, data, connection_name, table_name):
@@ -175,27 +174,11 @@ def parseHtmlDump(file_to_parse, words_to_remove, db_connection, key_name):
     storeInDb(key_name, v_hotJar, db_connection, "f_hotJar")
 
 
-def htmlToTxt_file(html_file):
-
-    f = codecs.open(html_file, 'r').read()
-
-    # load the html doc
-    h = html2text.HTML2Text()
-
-    try:
-        doc_text = h.handle(f.decode('latin-1'))
-    except Exception:
-        doc_text = h.handle(f.decode('windows-1252'))
-    else:
-        doc_text = h.handle(f.decode('utf-8'))
-
-    return unicode(h)
-
 
 def htmlToTxt_object(html):
     soup = BeautifulSoup(html, "lxml")
-    return soup.get_text()
-
+    return soup.get_text(strip=False)
+    return p
 
 def getLocalLinksFromHtml( html ):
     dom =  lxml.html.fromstring( html )
@@ -253,6 +236,9 @@ def parseHtml_technology(html):
     brightCove = detectTechnology('(brightcove.com)', html)
     hotJar = detectTechnology('(hotjar.com)', html)
 
+    # social plugins
+    twitterPlatform = detectTechnology('(platform.twitter.com)', html)
+
     # user feedback & contact tech
     usaBilla = detectTechnology('(usabilla.com)', html)
 
@@ -264,7 +250,11 @@ def parseHtml_technology(html):
     chartBeat = detectTechnology('(chartbeat.com)', html)
     celeraOne = detectTechnology('(celeraone.com)', html)
     crazyegg = detectTechnology('(crazyegg.com)', html)
-    plista = detectTechnology('(plista.com)', html)
+    scorecardResearch = detectTechnology('(scorecardresearch.com)', html)
+
+
+    # channel optimizer
+    smartocto = detectTechnology('(smartocto.com)', html) # story analytics
 
     # sales
     salesflare = detectTechnology('(salesflare.com)', html) # AI
@@ -274,7 +264,8 @@ def parseHtml_technology(html):
 
     # add & conversion optimizers
     shop2market = detectTechnology('(shop2market)', html)
-    shoppingMinds = detectTechnology('(shoppingminds)', html)
+    shoppingMinds = detectTechnology('(shoppingminds.com)', html)
+    plista =  detectTechnology('(plista.com)', html)
 
     # cdn & content delivery
     optimizely = detectTechnology('(cdn.optimizely.com)', html)
@@ -294,6 +285,9 @@ def parseHtml_technology(html):
 
     l = []
 
+    l.append([u"smartocto",smartocto])
+    l.append([u"scorecardResearch",scorecardResearch])
+    l.append([u"twitterPlatform",twitterPlatform])
     l.append([u"gigya",gigya])
     l.append([u"dimml",dimml])
     l.append([u"cbcdn",cbcdn])
@@ -345,5 +339,6 @@ def parseHtml_topwords(text, words_to_remove):
     top_words = []
     for i, item in enumerate(top20words):
         top_words.append(tuple(item)[0])
+
 
     return "|".join(top_words)
