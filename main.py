@@ -30,7 +30,13 @@ for line in f.read().split('\n'):
 
         # store in the database
         s.storeBasicUrlInfo(c.DB_FILE_PATH, url, redirectUrl, codePage, serverType, timeElapsed)
-        print url, redirectUrl, codePage, serverType, timeElapsed
+        #print url, redirectUrl, codePage, serverType, timeElapsed
+
+        print redirectUrl
+        for tech in technology:
+            if tech[1] == ['TRUE']:
+                print tech[0]
+
 
         links_dirty = s.getLocalLinksFromHtml( html )
         links_clean = []
